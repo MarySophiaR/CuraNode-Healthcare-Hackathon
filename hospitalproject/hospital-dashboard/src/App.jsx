@@ -39,16 +39,26 @@ const MainLayout = () => {
   return <DashboardLayout />;
 };
 
+import LandingPage from './pages/LandingPage';
+import EmergencyPage from './user-dashboard/EmergencyPage';
+
 const App = () => {
+  const { user } = useContext(AuthContext);
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/sos" element={<EmergencyPage />} />
         <Route path="/" element={
-          <ProtectedRoute>
-            <MainLayout />
-          </ProtectedRoute>
+          user ? (
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          ) : (
+            <LandingPage />
+          )
         }>
           <Route index element={<Overview />} />
           <Route path="analytics" element={<Analytics />} />

@@ -165,7 +165,7 @@ const QueueBooking = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #d1d5db', paddingTop: 20 }}>
                             <div style={{ textAlign: 'left' }}>
                                 <p style={{ fontSize: '0.6rem', fontWeight: 800, color: '#aaa', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Queue ID</p>
-                                <p style={{ fontSize: '0.8rem', fontWeight: 800, color: C.darkText }}>#CN-2026-X</p>
+                                <p style={{ fontSize: '0.8rem', fontWeight: 800, color: C.darkText }}>#CN-HEALTH-SERVICE</p>
                             </div>
                             <div style={{ textAlign: 'right' }}>
                                 <p style={{ fontSize: '0.6rem', fontWeight: 800, color: '#aaa', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Est. Wait</p>

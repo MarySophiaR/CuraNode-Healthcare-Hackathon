@@ -94,20 +94,19 @@ const EmergencyRequests = () => {
             console.log("[SOCKET] Connected to emergency network.");
             setLoading(false);
 
-            // Listen for NEW_EMERGENCY for Alert UI
+            // Listen for NEW_EMERGENCY
             socket.on('new_emergency', (data) => {
                 console.log("[DISPATCH] NEW EMERGENCY RECEIVED:", data);
-                playAlertSound();
-                setActiveEmergency(data);
-                setShowModal(true);
-                setIncomingRequests(prev => [...prev, data]);
+                // playAlertSound(); // Removed as per "remove feature" request
+                // setActiveEmergency(data);
+                // setShowModal(true);
+                // setIncomingRequests(prev => [...prev, data]);
                 setRequests((prev) => [data, ...prev]);
             });
 
             // Compatibility for background list updates
             socket.on('emergencyRequest', (data) => {
                 console.log("[DISPATCH] Incoming request data:", data);
-                // If it's already in the list from new_emergency, skip
                 setRequests((prev) => {
                     if (prev.find(r => r.emergencyId === data.emergencyId)) return prev;
                     return [data, ...prev];
@@ -183,79 +182,78 @@ const EmergencyRequests = () => {
 
     return (
         <div className="flex flex-col h-full relative">
-            {/* Alert Sound */}
-            <audio ref={audioRef} src="https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3" preload="auto" />
-
-            {/* Incoming Emergency Banner */}
-            {incomingRequests.length > 0 && (
-                <div className="absolute top-0 left-0 right-0 z-[1001] bg-red-600 text-white py-3 px-6 rounded-xl shadow-2xl animate-bounce flex items-center justify-between mx-4 mt-4">
-                    <div className="flex items-center gap-3">
-                        <span className="animate-ping w-3 h-3 bg-white rounded-full" />
-                        <span className="font-black tracking-widest text-sm italic">🚨 INCOMING EMERGENCY CASE - ACTION REQUIRED</span>
-                    </div>
-                    <div className="text-[10px] font-bold opacity-80 uppercase tracking-tighter">
-                        {incomingRequests.length} Pending Alert(s)
-                    </div>
-                </div>
-            )}
+            {/* Removed Alert Banner/Sound as per "remove feature" request */}
 
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <AlertCircle className="text-red-500" />
-                    Emergency Center
-                </h1>
+                <div className="flex items-center gap-2">
+                    <AlertCircle className="text-red-500 w-5 h-5" />
+                    <h1 className="text-lg font-bold text-gray-800">
+                        Emergency Center
+                    </h1>
+                </div>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setViewMode('list')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'list' ? 'bg-red-600 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200'}`}
+                        className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${viewMode === 'list' ? 'bg-[#C53030] text-white' : 'text-gray-500'}`}
                     >
                         Requests ({requests.length})
                     </button>
                     <button
                         onClick={() => setViewMode('map')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${viewMode === 'map' ? 'bg-red-600 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200'}`}
+                        className={`px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${viewMode === 'map' ? 'bg-[#C53030] text-white' : 'bg-white text-gray-600 border border-gray-200 shadow-sm'}`}
                     >
-                        <Navigation size={16} />
+                        <Navigation size={14} />
                         Live Tracking ({Object.keys(activeAmbulances).length})
                     </button>
                 </div>
             </div>
 
-            <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden min-h-[500px]">
+            <div className="flex-1 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
                 {viewMode === 'list' ? (
-                    <div className="p-6">
+                    <div className="p-6 flex-1 overflow-auto">
                         {requests.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-64 border border-dashed border-gray-200 rounded-xl">
-                                <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mb-3">
-                                    <Check className="text-green-500 w-6 h-6" />
+                            <div className="flex flex-col items-center justify-center py-32">
+                                <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                                    <Check className="text-green-500 w-4 h-4" strokeWidth={3} />
                                 </div>
-                                <p className="text-gray-500 font-medium">No pending requests</p>
-                                <p className="text-gray-400 text-sm">System is online and monitoring.</p>
+                                <p className="text-sm font-bold text-gray-600 mb-1">No pending requests</p>
+                                <p className="text-[11px] text-gray-400/80 font-medium">System is online and monitoring.</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 {requests.map((req) => {
                                     const severity = getSeverityBadge(req.severity);
                                     return (
-                                        <div key={req.emergencyId} className="p-4 border border-gray-100 rounded-xl flex items-center justify-between hover:bg-gray-50 transition-all">
+                                        <div key={req.emergencyId} className="p-5 border border-gray-100 rounded-2xl flex items-center justify-between hover:bg-gray-50 transition-all group">
                                             <div className="flex items-center gap-6">
-                                                <div className={`w-24 text-center py-1.5 rounded-lg text-xs font-bold border ${severity.color}`}>
+                                                <div className={`w-28 text-center py-2 rounded-xl text-[10px] font-black tracking-widest border shadow-sm ${severity.color}`}>
                                                     {severity.label}
                                                 </div>
-                                                <div className="flex items-center gap-4 text-sm text-gray-600">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <MapPin size={16} className="text-gray-400" />
-                                                        <span>{req.userLocation?.lat?.toFixed(4)}, {req.userLocation?.lng?.toFixed(4)}</span>
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                                        <MapPin size={14} className="text-red-400" />
+                                                        <span>{req.userLocation?.lat?.toFixed(5)}, {req.userLocation?.lng?.toFixed(5)}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Clock size={16} className="text-gray-400" />
-                                                        <span>{req.ETA || 'Calculating...'}</span>
+                                                    <div className="flex items-center gap-2 text-xs text-gray-400 font-medium">
+                                                        <Clock size={14} />
+                                                        <span>ETA: {req.ETA || 'Calculating...'}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <button onClick={() => handleReject(req.emergencyId)} className="px-4 py-2 text-sm font-bold text-gray-500 hover:bg-white rounded-lg transition-all">Reject</button>
-                                                <button onClick={() => handleAccept(req.emergencyId)} className="px-6 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition-all shadow-sm">Accept & Dispatch</button>
+                                                <button
+                                                    onClick={() => handleReject(req.emergencyId)}
+                                                    className="px-5 py-2.5 text-xs font-black uppercase tracking-widest text-gray-400 hover:text-gray-600 hover:bg-white rounded-xl transition-all"
+                                                >
+                                                    Reject
+                                                </button>
+                                                <button
+                                                    onClick={() => handleAccept(req.emergencyId)}
+                                                    className="px-8 py-2.5 bg-red-600 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-red-700 transition-all shadow-lg shadow-red-100 flex items-center gap-2"
+                                                >
+                                                    <Siren size={14} />
+                                                    Accept & Dispatch
+                                                </button>
                                             </div>
                                         </div>
                                     );
@@ -264,79 +262,22 @@ const EmergencyRequests = () => {
                         )}
                     </div>
                 ) : (
-                    <div className="h-full w-full relative">
+                    <div className="flex-1 w-full relative">
                         <div ref={mapRef} style={{ height: '100%', width: '100%' }} />
                         {Object.keys(activeAmbulances).length === 0 && (
                             <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-gray-900/5 backdrop-blur-[2px]">
-                                <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 text-center">
-                                    <Ambulance size={40} className="mx-auto mb-3 text-gray-300" />
-                                    <p className="font-bold text-gray-800">No active dispatches</p>
-                                    <p className="text-sm text-gray-500">Live locations will appear here after accepting requests.</p>
+                                <div className="bg-white p-10 rounded-3xl shadow-2xl border border-gray-100 text-center max-w-sm">
+                                    <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <Ambulance size={40} className="text-gray-300" />
+                                    </div>
+                                    <p className="font-black text-xl text-gray-900 mb-2">No active dispatches</p>
+                                    <p className="text-sm font-medium text-gray-400 px-4">Live tracking locations will appear here automatically once you accept an emergency request.</p>
                                 </div>
                             </div>
                         )}
                     </div>
                 )}
             </div>
-
-            {/* EMERGENCY ALERT MODAL */}
-            {showModal && activeEmergency && (
-                <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                    <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border-4 border-red-600 animate-in fade-in zoom-in duration-300">
-                        <div className="bg-red-600 text-white p-6 text-center relative">
-                            <BellRing className="w-12 h-12 mx-auto mb-2 animate-bounce" />
-                            <h2 className="text-2xl font-black italic tracking-tighter uppercase">Incoming Emergency</h2>
-                            <p className="text-red-100 text-sm font-bold opacity-80 uppercase">Immediate Dispatch Required</p>
-                            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors">
-                                <X size={24} />
-                            </button>
-                        </div>
-
-                        <div className="p-8 space-y-6">
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Patient ID</p>
-                                    <p className="font-bold text-gray-900">USR-{activeEmergency.userId.slice(-6).toUpperCase()}</p>
-                                </div>
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Severity</p>
-                                    <div className={`px-2 py-0.5 rounded text-[10px] font-black w-fit border ${getSeverityBadge(activeEmergency.severity).color}`}>
-                                        {getSeverityBadge(activeEmergency.severity).label}
-                                    </div>
-                                </div>
-                                <div className="space-y-1 col-span-2">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Location Coordinates</p>
-                                    <p className="font-bold text-gray-900 flex items-center gap-1">
-                                        <MapPin size={14} className="text-red-600" />
-                                        {activeEmergency.userLocation.lat.toFixed(6)}, {activeEmergency.userLocation.lng.toFixed(6)}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center gap-4 italic">
-                                <Clock className="text-gray-400" size={20} />
-                                <p className="text-sm text-gray-500 leading-relaxed font-medium">Estimated arrival time from current position is approximately <span className="text-red-600 font-bold underline">8 minutes</span>.</p>
-                            </div>
-
-                            <div className="flex gap-4 pt-4">
-                                <button
-                                    onClick={() => handleReject(activeEmergency.emergencyId)}
-                                    className="flex-1 py-4 text-gray-500 font-black uppercase text-xs tracking-widest hover:bg-gray-50 rounded-2xl transition-all"
-                                >
-                                    Reject Request
-                                </button>
-                                <button
-                                    onClick={() => handleAccept(activeEmergency.emergencyId)}
-                                    className="flex-[2] py-4 bg-red-600 text-white font-black uppercase text-xs tracking-widest rounded-2xl hover:bg-red-700 transition-all shadow-xl shadow-red-200 flex items-center justify-center gap-2"
-                                >
-                                    <Ambulance size={18} />
-                                    Dispatch Now
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

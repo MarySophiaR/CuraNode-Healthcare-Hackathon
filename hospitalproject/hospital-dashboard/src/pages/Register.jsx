@@ -163,7 +163,7 @@ const Register = () => {
                 </div>
 
                 <p className="mt-8 text-center text-gray-400 text-sm font-bold">
-                    &copy; 2026 CuraNode Emergency Systems. All rights reserved.
+                    Integrated Medical Support & Emergency Network
                 </p>
             </div>
         </div>

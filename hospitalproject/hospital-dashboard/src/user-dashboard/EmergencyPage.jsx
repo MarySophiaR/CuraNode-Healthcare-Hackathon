@@ -161,7 +161,7 @@ const EmergencyModal = ({ show, onClose, onConfirm, location }) => {
                     <p style={{ fontSize: '0.65rem', fontWeight: 800, color: C.darkText, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Your Detected Location</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: C.darkText, fontWeight: 700, fontSize: '0.9rem' }}>
                         <MapPin size={16} color={C.primary} />
-                        {location || "Detecting address..."}
+                        {(location || "Detecting address...") + " (demo places)"}
                     </div>
                 </div>
 
@@ -226,6 +226,11 @@ const EmergencyPage = () => {
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; OpenStreetMap'
             }).addTo(mapInstance.current);
+
+            // Fix for map size issue
+            setTimeout(() => {
+                mapInstance.current.invalidateSize();
+            }, 500);
         }
 
         const timeout = setTimeout(() => {
@@ -416,7 +421,7 @@ const EmergencyPage = () => {
     };
 
     return (
-        <div style={{ display: 'flex', height: '100%', width: '100%', background: C.white, overflow: 'hidden', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <div style={{ display: 'flex', height: '100vh', width: '100%', background: C.white, overflow: 'hidden', fontFamily: 'Inter, system-ui, sans-serif' }}>
 
             {/* Sidebar */}
             <div style={{ width: 400, flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: `1px solid ${C.border}`, background: C.white, zIndex: 10 }}>
@@ -518,7 +523,7 @@ const EmergencyPage = () => {
                 {(['dispatched', 'enroute'].includes(emergencyStatus)) && driverDetails && (
                     <ArrivalCard driver={driverDetails} eta={selectedHospital?.eta} status={emergencyStatus} />
                 )}
-                <EmergencyModal show={showConfirmModal} onClose={() => setShowConfirmModal(false)} onConfirm={handleConfirmDispatch} location={userLocation ? `${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}` : "Detecting..."} />
+                <EmergencyModal show={showConfirmModal} onClose={() => setShowConfirmModal(false)} onConfirm={handleConfirmDispatch} location={userLocation ? `${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)} (demo places)` : "Detecting... (demo places)"} />
             </div>
 
             <style>{`

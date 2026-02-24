@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (user) {
             const token = localStorage.getItem('token');
-            const socket = io('http://localhost:5000', {
+            const socket = io('http://localhost:5001', {
                 auth: { token }
             });
 
@@ -112,7 +112,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, setUser, login, register, logout, loading, fetchUser }}>
             {children}
         </AuthContext.Provider>
     );

@@ -5,7 +5,7 @@ import { Save, AlertTriangle, CheckCircle, RefreshCcw } from 'lucide-react';
 import { io } from 'socket.io-client';
 
 const BedManagement = () => {
-    const { user } = useContext(AuthContext);
+    const { user, fetchUser } = useContext(AuthContext);
 
     // Form State
     const [resources, setResources] = useState({
@@ -63,35 +63,6 @@ const BedManagement = () => {
 
     useEffect(() => {
         fetchHospitalData();
-
-        const socket = io('http://localhost:5000');
-
-        socket.on('connect', () => {
-            if (user?._id) socket.emit('registerHospital', user._id);
-        });
-
-        socket.on('hospitalUpdate', (data) => {
-            // IMPORTANT: Only update if the ID matches and we aren't currently editing
-            if (data.hospitalId === user?._id && !saving) {
-                setResources(prev => ({
-                    ...prev,
-                    availableBeds: data.availableBeds,
-                    availableICU: data.availableICU,
-                    availableOxygen: data.availableOxygen,
-                    ambulancesAvailable: data.ambulancesAvailable
-                }));
-
-                // Also update totals in case the hospital admin changed capacity elsewhere
-                setTotals({
-                    totalBeds: data.totalBeds,
-                    icuBeds: data.icuBeds,
-                    ambulancesTotal: data.ambulancesTotal
-                });
-            }
-        });
-
-        return () => socket.disconnect();
-        // Remove 'saving' from here to prevent constant reconnects
     }, [user?._id]);
 
     const handleChange = (e) => {
@@ -129,6 +100,7 @@ const BedManagement = () => {
             setSuccess(true);
             setTimeout(() => setSuccess(false), 3000);
             await fetchHospitalData();
+            await fetchUser(); // Sync globally with Overview
         } catch (err) {
             // If this still fails, your backend controller is likely 
             // blocking 'total' fields from being updated.

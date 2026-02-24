@@ -87,7 +87,7 @@ CURANODE
 ## 🎥 Project Demo
 
 🔗 **Watch Full Demo Video:**  
-[CuraNode Healthcare Hackathon Demo](https://drive.google.com/file/d/1ytZ2VLuiM48cJWGdmG1nVyVg_5uC1Ear/view?usp=sharing)
+[CuraNode Healthcare Hackathon Demo](https://drive.google.com/file/d/1fISVUL0FEPKtFxwjEcessLwDBdWHbNR1/view?usp=sharing)
 
 ## 👩‍💻 Developed By
 
