@@ -76,6 +76,13 @@ CURANODE
 - Mobile application support
 
 ---
+## 📸 Screenshots
+
+### 🧑‍💻 User Dashboard
+![User Dashboard](assets/user-dashboard.png)
+
+### 🏥 Hospital Dashboard
+![Hospital Dashboard](assets/hospital-dashboard.png)
 
 ## 👩‍💻 Developed By
 
