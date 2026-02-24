@@ -84,6 +84,11 @@ CURANODE
 ### 🏥 Hospital Dashboard
 ![Hospital Dashboard](assets/hospital-dashboard.png)
 
+## 🎥 Project Demo
+
+🔗 **Watch Full Demo Video:**  
+[CuraNode Healthcare Hackathon Demo](https://drive.google.com/file/d/1ytZ2VLuiM48cJWGdmG1nVyVg_5uC1Ear/view?usp=sharing)
+
 ## 👩‍💻 Developed By
 
 Mary Sophia R  
